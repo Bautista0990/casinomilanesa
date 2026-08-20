@@ -11,11 +11,20 @@ builder.Services.AddCors(options => {
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Usamos versión fija para no fallar si MySQL tarda un segundo en responder
+// Validación para detectar rápidamente si la variable no llegó
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("La variable 'ConnectionStrings__DefaultConnection' no está configurada o llegó vacía.");
+}
+
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, serverVersion));
+    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
+        mySqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null)));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
