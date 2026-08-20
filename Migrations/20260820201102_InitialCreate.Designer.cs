@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CasinoMilanesaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260820200616_InitialCreate")]
+    [Migration("20260820201102_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -56,7 +56,7 @@ namespace CasinoMilanesaAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("fecha_registro")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
 
                     b.Property<string>("JuegoFavorito")
                         .IsRequired()

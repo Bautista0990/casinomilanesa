@@ -53,7 +53,7 @@ namespace CasinoMilanesaAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
                         .HasColumnName("fecha_registro")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP(6)");
 
                     b.Property<string>("JuegoFavorito")
                         .IsRequired()

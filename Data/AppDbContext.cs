@@ -26,7 +26,10 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Estado).HasColumnName("estado").HasDefaultValue("activo");
             
             // Acá ya le estás indicando el valor SQL correcto a la fecha
-            entity.Property(e => e.FechaRegistro).HasColumnName("fecha_registro").HasDefaultValueSql("CURRENT_TIMESTAMP");
-        });
+// Reemplazá la línea de FechaRegistro por esta:
+entity.Property(e => e.FechaRegistro)
+      .HasColumnName("fecha_registro")
+      .HasDefaultValueSql("CURRENT_TIMESTAMP(6)"); // <-- ¡El (6) es la clave!        
+      });
     }
 }
