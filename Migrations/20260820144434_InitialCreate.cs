@@ -35,8 +35,12 @@ namespace CasinoMilanesaAPI.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     estado = table.Column<string>(type: "longtext", nullable: false, defaultValue: "activo")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    fecha_registro = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
-                },
+                    // Cambiá esto si aparece con new DateTime(...)
+                    fecha_registro = table.Column<DateTime>(
+                        type: "datetime",
+                        nullable: false,
+                        defaultValueSql: "CURRENT_TIMESTAMP" // <-- Debe decir defaultValueSql
+                    )                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_usuarios", x => x.Id);

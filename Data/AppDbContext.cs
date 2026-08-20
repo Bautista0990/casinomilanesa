@@ -26,5 +26,9 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Estado).HasColumnName("estado").HasDefaultValue("activo");
             entity.Property(e => e.FechaRegistro).HasColumnName("fecha_registro").HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
+
+        modelBuilder.Entity<TuEntidad>() // Reemplazá por el nombre de la clase (ej: Usuario)
+    .Property(e => e.FechaRegistro)
+    .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }
