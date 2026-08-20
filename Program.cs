@@ -9,8 +9,13 @@ builder.Services.AddCors(options => {
     options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-    ?? "Server=localhost;Port=3306;Database=casino_milanesa;Uid=root;Pwd=tu_contraseña;";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// Usamos versión fija para no fallar si MySQL tarda un segundo en responder
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, serverVersion));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
