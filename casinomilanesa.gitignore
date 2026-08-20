@@ -1,0 +1,4 @@
+echo "bin/
+obj/
+.vs/
+appsettings.Development.json" > .gitignore
