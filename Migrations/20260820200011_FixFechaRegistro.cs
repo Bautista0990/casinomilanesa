@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CasinoMilanesaAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class FixFechaRegistro : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,12 +35,8 @@ namespace CasinoMilanesaAPI.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     estado = table.Column<string>(type: "longtext", nullable: false, defaultValue: "activo")
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    // Cambiá esto si aparece con new DateTime(...)
-                    fecha_registro = table.Column<DateTime>(
-                        type: "datetime",
-                        nullable: false,
-                        defaultValueSql: "CURRENT_TIMESTAMP" // <-- Debe decir defaultValueSql
-                    )                },
+                    fecha_registro = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_usuarios", x => x.Id);
