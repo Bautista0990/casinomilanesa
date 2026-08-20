@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CasinoMilanesaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260820200011_FixFechaRegistro")]
-    partial class FixFechaRegistro
+    [Migration("20260820200616_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

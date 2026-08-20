@@ -24,10 +24,9 @@ public class AppDbContext : DbContext
             entity.Property(e => e.Rol).HasColumnName("rol").HasDefaultValue("jugador");
             entity.Property(e => e.JuegoFavorito).HasColumnName("juego_favorito").HasMaxLength(50).HasDefaultValue("Tragamonedas");
             entity.Property(e => e.Estado).HasColumnName("estado").HasDefaultValue("activo");
+            
+            // Acá ya le estás indicando el valor SQL correcto a la fecha
             entity.Property(e => e.FechaRegistro).HasColumnName("fecha_registro").HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
-         modelBuilder.Entity<Usuario>() // Reemplazá por el nombre de la clase (ej: Usuario)
-    .Property(e => e.FechaRegistro)
-    .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }
