@@ -16,6 +16,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 var app = builder.Build();
+// Aplica las migraciones automáticamente al arrancar
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
 app.UseCors();
 
 app.MapGet("/", () => "🎰 API Casino La Milanesa Giratoria está online 🥩");
