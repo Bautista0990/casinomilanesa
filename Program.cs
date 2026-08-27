@@ -5,13 +5,13 @@ using CasinoMilanesaAPI.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuración de CORS
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Validación para detectar rápidamente si la variable no llegó
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("La variable 'ConnectionStrings__DefaultConnection' no está configurada o llegó vacía.");
@@ -26,16 +26,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             maxRetryDelay: TimeSpan.FromSeconds(10),
             errorNumbersToAdd: null)));
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
 var app = builder.Build();
-// Aplica las migraciones automáticamente al arrancar
+
+// Migraciones automáticas al iniciar
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
+
 app.UseCors();
 
 app.MapGet("/", () => "🎰 API Casino La Milanesa Giratoria está online 🥩");
@@ -51,7 +50,8 @@ app.MapPost("/api/auth/registro", async (AppDbContext db, RegistroDto dto) =>
         Nombre = dto.Nombre,
         Apellido = dto.Apellido,
         Email = dto.Email,
-        PasswordHash = dto.Password + "_hashTrucho"
+        JuegoFavorito = dto.JuegoFavorito,
+        PasswordHash = dto.Password + "_hashTrucho" // Guardado con el sufijo
     };
 
     db.Usuarios.Add(usuario);
@@ -65,13 +65,14 @@ app.MapPost("/api/auth/login", async (AppDbContext db, LoginDto dto) =>
     var usuario = await db.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
     
     if (usuario == null)
-        return Results.Unauthorized(); // <-- Devuelve 401 si no encuentra el mail
+        return Results.Unauthorized(); 
 
-    // Verificar contraseña
-    if (usuario.Password != dto.Password) 
-        return Results.Unauthorized(); // <-- Devuelve 401 si la clave no coincide
+    // Verificamos contra la propiedad PasswordHash armada en el registro
+    var hashEsperado = dto.Password + "_hashTrucho";
+    if (usuario.PasswordHash != hashEsperado) 
+        return Results.Unauthorized(); 
 
-    return Results.Ok(new { usuario.Id, usuario.Nombre, usuario.Email });
+    return Results.Ok(new { usuario.Id, usuario.Nombre, usuario.Email, usuario.JuegoFavorito });
 });
 
 // Admin Endpoints
@@ -112,25 +113,5 @@ app.MapPut("/api/admin/usuarios/{id:int}/ban", async (AppDbContext db, int id) =
 
     return Results.Ok(new { mensaje = "Usuario dado de baja exitosamente." });
 });
-var builder = WebApplication.CreateBuilder(args);
 
-// 1. Agregar política CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
-});
-
-// ... resto de tus servicios
-
-var app = builder.Build();
-
-// 2. Habilitar CORS en el pipeline (IMPORTANTE: colocar antes de MapControllers)
-app.UseCors("AllowAll");
-
-app.MapControllers();
 app.Run();
