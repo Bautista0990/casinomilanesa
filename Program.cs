@@ -62,12 +62,16 @@ app.MapPost("/api/auth/registro", async (AppDbContext db, RegistroDto dto) =>
 
 app.MapPost("/api/auth/login", async (AppDbContext db, LoginDto dto) =>
 {
-    var user = await db.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email && u.PasswordHash == dto.Password + "_hashTrucho");
+    var usuario = await db.Usuarios.FirstOrDefaultAsync(u => u.Email == dto.Email);
     
-    if (user == null) return Results.Unauthorized();
-    if (user.Estado == "baneado") return Results.Json(new { mensaje = "Usuario baneado." }, statusCode: 403);
+    if (usuario == null)
+        return Results.Unauthorized(); // <-- Devuelve 401 si no encuentra el mail
 
-    return Results.Ok(new { user.Id, user.Nombre, user.Rol });
+    // Verificar contraseña
+    if (usuario.Password != dto.Password) 
+        return Results.Unauthorized(); // <-- Devuelve 401 si la clave no coincide
+
+    return Results.Ok(new { usuario.Id, usuario.Nombre, usuario.Email });
 });
 
 // Admin Endpoints
