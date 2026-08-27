@@ -108,5 +108,25 @@ app.MapPut("/api/admin/usuarios/{id:int}/ban", async (AppDbContext db, int id) =
 
     return Results.Ok(new { mensaje = "Usuario dado de baja exitosamente." });
 });
+var builder = WebApplication.CreateBuilder(args);
 
+// 1. Agregar política CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// ... resto de tus servicios
+
+var app = builder.Build();
+
+// 2. Habilitar CORS en el pipeline (IMPORTANTE: colocar antes de MapControllers)
+app.UseCors("AllowAll");
+
+app.MapControllers();
 app.Run();
